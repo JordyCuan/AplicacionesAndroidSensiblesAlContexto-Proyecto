@@ -28,6 +28,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import cuan.jordy.com.androidcontexto.json.JSONResponseHandler;
+
 
 public class NetworkingAndroidHttpClientJSONActivity extends ListActivity implements
 		GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
@@ -45,20 +47,13 @@ public class NetworkingAndroidHttpClientJSONActivity extends ListActivity implem
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		this.buildGoogleApiClient();
-
-//		Log.d("****** LatLog ******", "Lat: " + mLat + " Lon: " + mLon);
-//		new HttpGetTemperatureTask().execute();
 	}
 
 	private class HttpGetTemperatureTask extends AsyncTask<Void, Void, List<String>> {
 
 		private static final String API = "15008854a738af6f415cc6a1fa0b6dd5";
-		//mLat = -38.6999;
-		//mLon = -62.266;
 		private final String URL =
 				"http://api.openweathermap.org/data/2.5/weather?lat="
-						//+ Utils.truncate_3(mLat) + "&lon="
-						//+ Utils.truncate_3(mLon) + "&appid="
 						+ mLat + "&lon="
 						+ mLon + "&appid="
 						+ API;
@@ -87,96 +82,6 @@ public class NetworkingAndroidHttpClientJSONActivity extends ListActivity implem
 			setListAdapter(new ArrayAdapter<String>(
 					NetworkingAndroidHttpClientJSONActivity.this,
 					R.layout.list_item, result));
-		}
-	}
-
-	private class JSONResponseHandler implements ResponseHandler<List<String>> {
-		/* INTERESANTES:
-		http://openweathermap.org/current
-				{
-					"weather": [{
-						... ,
-						"description": "clear sky",
-						...
-					}],
-					"main": {
-						"temp": 279.388,
-						"pressure": 1039.04,
-						"humidity": 91,
-						"temp_min": 279.388,
-						"temp_max": 279.388,
-						...
-					},
-					"wind": {
-						"speed": 0.58,
-						...
-					},
-					"sys": {
-						... ,
-						"country": "AR",
-						"sunrise": 1466249213,
-						"sunset": 1466283253
-					},
-					"name": "Bahia Blanca",
-					...
-				}
-		*/
-		private static final String JSON_KEY_WEATHER = "weather";
-		private static final String JSON_KEY_DESCRIPTION = "description";
-
-		private static final String JSON_KEY_MAIN = "main";
-		private static final String JSON_KEY_MAIN_TEMP = "temp";
-		private static final String JSON_KEY_MAIN_PRESSURE = "pressure";
-		private static final String JSON_KEY_MAIN_HUMIDITY = "humidity";
-		private static final String JSON_KEY_MAIN_TEMP_MIN = "temp_min";
-		private static final String JSON_KEY_MAIN_TEMP_MAX = "temp_max";
-
-		private static final String JSON_KEY_WIND = "wind";
-		private static final String JSON_KEY_WIND_SPEED = "speed";
-
-		private static final String JSON_KEY_SYS = "sys";
-		private static final String JSON_KEY_SYS_COUNTRY = "country";
-		private static final String JSON_KEY_SYS_SUNRISE = "sunrise";
-		private static final String JSON_KEY_SYS_SUNSET = "sunset";
-
-		private static final String JSON_KEY_NAME = "name";
-
-		@Override
-		public List<String> handleResponse(HttpResponse response)
-				throws ClientProtocolException, IOException {
-			List<String> result = new ArrayList<String>();
-
-			Log.d("**** StatusCode ****", " " + response.getStatusLine().getStatusCode() + " " );
-			if (response.getStatusLine().getStatusCode() != 200) {
-				result.add("NULO");
-				return result;
-			}
-
-			String JSONResponse = new BasicResponseHandler()
-					.handleResponse(response);
-
-			try {
-				JSONObject responseObject = new JSONObject(JSONResponse);
-				Log.d("****** Response ******", JSONResponse);
-
-				// Extraemos los datos del objeto
-				String desc = ((JSONObject) responseObject.getJSONArray(JSON_KEY_WEATHER).get(0)).getString(JSON_KEY_DESCRIPTION);
-				JSONObject main = responseObject.getJSONObject(JSON_KEY_MAIN);
-
-				double speed_mps = responseObject.getJSONObject(JSON_KEY_WIND).getDouble(JSON_KEY_WIND_SPEED);
-
-				JSONObject sys = responseObject.getJSONObject(JSON_KEY_SYS);
-				String country = sys.getString(JSON_KEY_SYS_COUNTRY);
-
-				String name = responseObject.getString(JSON_KEY_NAME);
-
-
-				result.add("temp: " + Utils.kelvinToCelsius(main.getDouble(JSON_KEY_MAIN_TEMP))
-						+ " - " + name + ", " + country);
-			} catch (JSONException e1) {
-				e1.printStackTrace();
-			}
-			return result;
 		}
 	}
 
