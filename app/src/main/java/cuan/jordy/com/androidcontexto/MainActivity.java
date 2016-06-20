@@ -1,6 +1,5 @@
 package cuan.jordy.com.androidcontexto;
 
-import android.*;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -40,7 +39,7 @@ public class MainActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				startActivity(new Intent(MainActivity.this,
-						NetworkingAndroidHttpClientJSONActivity.class));
+						WeatherListActivity.class));
 			}
 		});
 	}

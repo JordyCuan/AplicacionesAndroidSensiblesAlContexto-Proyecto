@@ -58,8 +58,8 @@ public class BootReceiver extends BroadcastReceiver {
 		alarmMgr.setInexactRepeating(AlarmManager.RTC, calendar.getTimeInMillis(),
 				time_interval, alarmIntent);*/
 		alarmMgr.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP,
-				1000 * 60 * 2, // Se disparará después de dos minutos
-				1000 * 60 * 2, // Se repetirá a cada dos minutos
+				1000 * 60 * 2 * 60, // Se disparará después de dos minutos
+				1000 * 60 * 2 * 60, // Se repetirá a cada dos minutos
 				               // Lo ideal es que se repita a cada dos horas, no tiene tanto sentido
 							   // que esto sea muy frecuente
 				alarmIntent);

@@ -2,16 +2,23 @@ package cuan.jordy.com.androidcontexto.service;
 
 import android.Manifest;
 import android.app.IntentService;
-import android.content.Intent;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.drawable.BitmapDrawable;
 import android.location.Location;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.http.AndroidHttpClient;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
-import android.widget.ArrayAdapter;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -23,14 +30,21 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.HttpGet;
 
 import java.io.IOException;
-import java.util.List;
 
+import cuan.jordy.com.androidcontexto.WeatherListActivity;
 import cuan.jordy.com.androidcontexto.R;
 import cuan.jordy.com.androidcontexto.db.Element;
 import cuan.jordy.com.androidcontexto.json.JSONResponseHandler;
 
 
-public class WeatherUpdateService extends IntentService  implements
+/**
+ * Servicio utilizado por la aplicación para conseguir la ubicación actual del
+ * dispositivo móvil. Cuando la ubicación es obtenida (mediante un proceso
+ * a sincrono de los procesos de google), esta se envía al API con el servicio
+ * de clima y esperamos la respuesta (Usamos un AsynckTask). Cuando la respuesta
+ * del servicio web es obtenida, se almacena en la base de datos
+ */
+public class WeatherUpdateService extends IntentService implements
 		GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
 		LocationListener {
 	/**
@@ -43,6 +57,8 @@ public class WeatherUpdateService extends IntentService  implements
 
 	public static Location mLastLocation;
 	public double mLat, mLon;
+	private boolean conectado = false;
+	private Handler handler;
 
 	protected static final String TAG = "*** WeatherUpdateServi";
 
@@ -60,7 +76,18 @@ public class WeatherUpdateService extends IntentService  implements
 	public void onCreate() {
 		super.onCreate();
 		Log.d("****** Servicio ******", "--- SERVICIO INICIADO ---");
-		this.buildGoogleApiClient();
+
+		// TODO: VERIFICAR ESTADO DEL WIFI
+		ConnectivityManager connManager = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
+		NetworkInfo wifi = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+		NetworkInfo mobile = connManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
+
+		if (wifi.isConnected() || mobile.isConnected()) {
+			Log.d("****** Esta Conectado", "--- Hay red movil ---" + wifi.isConnected() + mobile.isConnected());
+			this.conectado = true;
+			this.buildGoogleApiClient();
+			handler = new Handler();
+		}
 	}
 
 	@Override
@@ -71,7 +98,10 @@ public class WeatherUpdateService extends IntentService  implements
 
 	@Override
 	protected void onHandleIntent(Intent intent) {
-		mGoogleApiClient.connect();
+		Log.d("****** onHandleIntent", "--- Se inicia la conexión de la localización ---");
+		if (this.conectado)
+			if (!mGoogleApiClient.isConnected())
+				mGoogleApiClient.connect();
 	}
 
 	private synchronized void buildGoogleApiClient() {
@@ -80,11 +110,14 @@ public class WeatherUpdateService extends IntentService  implements
 				.addOnConnectionFailedListener(this)
 				.addApi(LocationServices.API)
 				.build();
-		mGoogleApiClient.connect();
+		if (!mGoogleApiClient.isConnected())
+			mGoogleApiClient.connect();
 	}
 
 
-	/********* METODOS IMPLEMENTADOS ********/
+	/*********
+	 * METODOS IMPLEMENTADOS
+	 ********/
 	/*  */
 	@Override
 	public void onConnected(Bundle connectionHint) {
@@ -114,6 +147,7 @@ public class WeatherUpdateService extends IntentService  implements
 		Log.d("****** FIN ******", "--- FIN - CONECTADO ---");
 	}
 
+
 	@Override
 	public void onConnectionFailed(ConnectionResult result) {
 		// Refer to the javadoc for ConnectionResult to see what error codes might be returned in
@@ -131,6 +165,7 @@ public class WeatherUpdateService extends IntentService  implements
 		//mGoogleApiClient.connect();
 	}
 
+
 	@Override
 	public void onLocationChanged(Location location) {
 		mLastLocation = location;
@@ -146,7 +181,6 @@ public class WeatherUpdateService extends IntentService  implements
 		new HttpGetTemperatureTask().execute();
 		Log.d("****** AfterTask ******", "Task Launched");
 	}
-
 
 
 	/********************************************/
@@ -185,8 +219,49 @@ public class WeatherUpdateService extends IntentService  implements
 			if (result != null) {
 				Log.d(TAG, "*** Saving: " + result);
 				result.save();
+
+				// TODO: Generar la notificación
+				mostrarNotificacion(result);
 			}
 			mGoogleApiClient.disconnect();
 		}
+	}
+
+
+	public void mostrarNotificacion(final Element element) {
+
+		// Intervenimos en el UI
+		handler.post(new Runnable() {
+			public void run() {
+
+				String text = "Nuevo informe climático recibido";
+				NotificationCompat.BigTextStyle textStyle = new NotificationCompat.BigTextStyle().bigText(text);
+
+				NotificationCompat.Builder mBuilder =
+						new NotificationCompat.Builder(getApplicationContext())
+						.setSmallIcon(R.mipmap.ic_launcher)
+						.setLargeIcon((((BitmapDrawable) getResources().getDrawable(R.mipmap.ic_launcher)).getBitmap()))
+								// TODO: Cambiar estos 2 despues
+						.setContentTitle("Nuevo Informe")
+						.setContentText("Nuevo informe climático recibido para la ciudad de "
+										+ element.name + ", " + element.country)
+								//.setContentInfo("4")
+						.setStyle(textStyle)
+						.setAutoCancel(true)
+						.setDefaults(Notification.DEFAULT_ALL)
+						.setPriority(NotificationCompat.PRIORITY_HIGH)
+						.setTicker("Informe climatico nuevo recibido");
+
+
+				Intent intent = new Intent(getApplicationContext(), WeatherListActivity.class);
+				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+
+				NotificationManager mNotificationManager =
+						(NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+				// Mostramos la notificación
+				mNotificationManager.notify(element.getId().intValue(), mBuilder.build());
+			}
+		});
 	}
 }
