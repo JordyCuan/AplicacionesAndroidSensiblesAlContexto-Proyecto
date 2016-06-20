@@ -14,13 +14,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cuan.jordy.com.androidcontexto.Utils;
+import cuan.jordy.com.androidcontexto.db.Element;
 
 /**
  * Created by JordyCuan on 19/06/16.
  */
-public class JSONResponseHandler implements ResponseHandler<List<String>> {
-	/* INTERESANTES:
-	http://openweathermap.org/current
+public class JSONResponseHandler implements ResponseHandler<Element> {
+	/**
+		INTERESANTES:
+		http://openweathermap.org/current
 			{
 				"weather": [{
 					... ,
@@ -70,40 +72,47 @@ public class JSONResponseHandler implements ResponseHandler<List<String>> {
 	private static final String JSON_KEY_NAME = "name";
 
 	@Override
-	public List<String> handleResponse(HttpResponse response)
+	public Element handleResponse(HttpResponse response)
 			throws ClientProtocolException, IOException {
-		List<String> result = new ArrayList<String>();
+
+		Element e = null;
 
 		Log.d("**** StatusCode ****", " " + response.getStatusLine().getStatusCode() + " " );
-		if (response.getStatusLine().getStatusCode() != 200) {
-			result.add("NULO");
-			return result;
-		}
+		if (response.getStatusLine().getStatusCode() != 200) { return null; }
 
-		String JSONResponse = new BasicResponseHandler()
-				.handleResponse(response);
-
+		String JSONResponse = new BasicResponseHandler().handleResponse(response);
 		try {
-			JSONObject responseObject = new JSONObject(JSONResponse);
 			Log.d("****** Response ******", JSONResponse);
-
-			// Extraemos los datos del objeto
-			String desc = ((JSONObject) responseObject.getJSONArray(JSON_KEY_WEATHER).get(0)).getString(JSON_KEY_DESCRIPTION);
-			JSONObject main = responseObject.getJSONObject(JSON_KEY_MAIN);
-
-			double speed_mps = responseObject.getJSONObject(JSON_KEY_WIND).getDouble(JSON_KEY_WIND_SPEED);
-
-			JSONObject sys = responseObject.getJSONObject(JSON_KEY_SYS);
-			String country = sys.getString(JSON_KEY_SYS_COUNTRY);
-
-			String name = responseObject.getString(JSON_KEY_NAME);
-
-
-			result.add("temp: " + Utils.kelvinToCelsius(main.getDouble(JSON_KEY_MAIN_TEMP))
-					+ " - " + name + ", " + country);
+			 e = generateItem(new JSONObject(JSONResponse));
 		} catch (JSONException e1) {
 			e1.printStackTrace();
 		}
-		return result;
+		return e;
+	}
+
+	private Element generateItem(JSONObject responseObject) throws JSONException {
+		Element element = new Element();
+
+		// Extraemos los datos del objeto
+		element.description  = ((JSONObject) responseObject.getJSONArray(JSON_KEY_WEATHER).get(0)).getString(JSON_KEY_DESCRIPTION);;
+
+		JSONObject main = responseObject.getJSONObject(JSON_KEY_MAIN);
+		element.temp = Utils.kelvinToCelsius(main.getDouble(JSON_KEY_MAIN_TEMP));
+		element.pressure = main.getDouble(JSON_KEY_MAIN_PRESSURE);
+		element.humidity = main.getInt(JSON_KEY_MAIN_HUMIDITY);
+		element.temp_min = Utils.kelvinToCelsius(main.getDouble(JSON_KEY_MAIN_TEMP_MIN));
+		element.temp_max = Utils.kelvinToCelsius(main.getDouble(JSON_KEY_MAIN_TEMP_MAX));
+
+		// metros/segundo
+		element.speed = responseObject.getJSONObject(JSON_KEY_WIND).getDouble(JSON_KEY_WIND_SPEED);
+
+		JSONObject sys = responseObject.getJSONObject(JSON_KEY_SYS);
+		element.country = sys.getString(JSON_KEY_SYS_COUNTRY);
+		element.sunrise = sys.getLong(JSON_KEY_SYS_SUNRISE);
+		element.sunset = sys.getLong(JSON_KEY_SYS_SUNSET);
+
+		element.name = responseObject.getString(JSON_KEY_NAME);
+
+		return element;
 	}
 }
