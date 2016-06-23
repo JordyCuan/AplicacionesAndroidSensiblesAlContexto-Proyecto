@@ -38,9 +38,14 @@ public class Element extends Model {
 	@Column(name = "Sunset") public long sunset;
 	@Column(name = "City_name") public String name;
 
+	@Column(name = "DateString") public String dateString;
+	@Column(name = "Date") public long date;
+
 	public Element() { super(); }
 
-	public Element(String description, double temp, double pressure, int humidity, double temp_min, double temp_max, double speed, String country, long sunrise, long sunset, String name) {
+	public Element(String description, double temp, double pressure, int humidity, double temp_min,
+	               double temp_max, double speed, String country, long sunrise, long sunset,
+	               String name, String dateString, long date) {
 		super();
 		this.description = description;
 		this.temp = temp;
@@ -53,12 +58,15 @@ public class Element extends Model {
 		this.sunrise = sunrise;
 		this.sunset = sunset;
 		this.name = name;
+		this.dateString = dateString;
+		this.date = date;
 	}
 
 	@Override
 	public String toString() {
 		return "Element{" +
 				"description='" + description + '\'' +
+				", dateString=" + dateString +
 				", temp=" + temp +
 				", pressure=" + pressure +
 				", humidity=" + humidity +
@@ -73,6 +81,7 @@ public class Element extends Model {
 	}
 
 	public static List<Element> getAll() {
+		// TODO: Order by date
 		return new Select()
 				.from(Element.class)
 				.execute();

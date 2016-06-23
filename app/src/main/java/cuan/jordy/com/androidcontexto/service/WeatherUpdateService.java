@@ -18,6 +18,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NotificationCompat;
+import android.text.format.DateFormat;
 import android.util.Log;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -30,6 +31,7 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.HttpGet;
 
 import java.io.IOException;
+import java.util.Date;
 
 import cuan.jordy.com.androidcontexto.WeatherListActivity;
 import cuan.jordy.com.androidcontexto.R;
@@ -217,10 +219,15 @@ public class WeatherUpdateService extends IntentService implements
 			if (null != mClient)
 				mClient.close();
 			if (result != null) {
+				// TODO: conseguir la fecha
+				Date d = new Date();
+				result.date = d.getTime();
+				result.dateString = DateFormat.format("dd/MM/yyyy hh:mm:ss", result.date).toString();
+
 				Log.d(TAG, "*** Saving: " + result);
 				result.save();
 
-				// TODO: Generar la notificación
+				// TO DO: Generar la notificación?
 				mostrarNotificacion(result);
 			}
 			mGoogleApiClient.disconnect();
@@ -229,6 +236,7 @@ public class WeatherUpdateService extends IntentService implements
 
 
 	public void mostrarNotificacion(final Element element) {
+		// TODO: La notificación no se abre Se debe reemplazar la notificacion anterior
 
 		// Intervenimos en el UI
 		handler.post(new Runnable() {

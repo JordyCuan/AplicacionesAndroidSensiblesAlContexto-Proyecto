@@ -53,13 +53,13 @@ public class BootReceiver extends BroadcastReceiver {
 		// setRepeating() lets you specify a precise custom interval--in this case,
 		// 20 minutes.
 		int minutes = 120; // 2 hours
-		minutes = 2; // TODO: Test
+		minutes = 2; // TO DO: Test
 		long time_interval = 1000 * 60 * minutes;
 		alarmMgr.setInexactRepeating(AlarmManager.RTC, calendar.getTimeInMillis(),
 				time_interval, alarmIntent);*/
 		alarmMgr.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP,
-				1000 * 60 * 2 * 60, // Se disparará después de dos minutos
-				1000 * 60 * 2 * 60, // Se repetirá a cada dos minutos
+				1000 * 60 * 2, //* 60, // Se disparará después de dos minutos
+				1000 * 60 * 2, //* 60, // Se repetirá a cada dos minutos
 				               // Lo ideal es que se repita a cada dos horas, no tiene tanto sentido
 							   // que esto sea muy frecuente
 				alarmIntent);

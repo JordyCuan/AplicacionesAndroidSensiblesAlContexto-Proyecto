@@ -9,9 +9,6 @@
                 tools:context="cuan.jordy.com.androidcontexto.MainActivityFragment"
                 tools:showIn="@layout/bg_activity_main">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Hello World!"/>
+
 
 </RelativeLayout>
