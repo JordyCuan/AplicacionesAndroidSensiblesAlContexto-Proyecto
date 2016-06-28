@@ -16,11 +16,12 @@ import com.jordycuan.clima.receiver.BootReceiver;
 public class MainActivity extends AppCompatActivity {
 
 	public static ArrayAdapter mAdapter;
+	public static MainActivityFragment mainActivityFragment;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.bg_activity_main);
+		setContentView(R.layout.activity_main);
 		ActiveAndroid.initialize(this);
 
 		if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
@@ -48,6 +49,8 @@ public class MainActivity extends AppCompatActivity {
 		super.onResume();
 		if (this.mAdapter != null)
 			this.mAdapter.notifyDataSetChanged();
+		if (this.mainActivityFragment != null)
+			this.mainActivityFragment.drawItems(this);
 	}
 
 	@Override

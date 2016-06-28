@@ -2,6 +2,7 @@ package com.jordycuan.clima.service;
 
 import android.Manifest;
 import android.app.IntentService;
+import android.app.ListFragment;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -224,6 +225,9 @@ public class WeatherUpdateService extends IntentService implements
 				if (MainActivity.mAdapter != null) {
 					MainActivity.mAdapter.notifyDataSetChanged();
 				}
+				if (MainActivity.mainActivityFragment != null) {
+					MainActivity.mainActivityFragment.drawItems(getApplicationContext());
+				}
 			}
 			mGoogleApiClient.disconnect();
 		}
@@ -244,8 +248,7 @@ public class WeatherUpdateService extends IntentService implements
 						.setLargeIcon((((BitmapDrawable) getResources().getDrawable(R.mipmap.ic_launcher)).getBitmap()))
 								// TODO: Cambiar estos 2 despues
 						.setContentTitle("Nuevo Informe")
-						.setContentText("Nuevo informe climático recibido para la ciudad de "
-										+ element.name + ", " + element.country)
+						.setContentText("Clima de " + element.name + ", " + element.country)
 						.setStyle(textStyle)
 						.setAutoCancel(true)
 						.setDefaults(Notification.DEFAULT_ALL)

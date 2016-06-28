@@ -32,21 +32,20 @@ public class BootReceiver extends BroadcastReceiver {
 				context,
 				0,
 				new Intent(context, WeatherUpdateService.class),
-				0);
+				PendingIntent.FLAG_NO_CREATE);
+
+		if (alarmIntent != null) {
+			Log.d("****** Al_arm ******", "La alarma ya existe");
+			return;
+		} else {
+			alarmIntent = PendingIntent.getService(
+					context,
+					0,
+					new Intent(context, WeatherUpdateService.class),
+					0);
+		}
+
 /*
-		// Set the alarm to start at 8:30 a.m.
-		Calendar calendar = Calendar.getInstance();
-		calendar.setTimeInMillis(System.currentTimeMillis());
-		calendar.set(Calendar.HOUR_OF_DAY, 6);
-		calendar.set(Calendar.HOUR_OF_DAY, 8);
-		calendar.set(Calendar.HOUR_OF_DAY, 10);
-		calendar.set(Calendar.HOUR_OF_DAY, 12);
-		calendar.set(Calendar.HOUR_OF_DAY, 14);
-		calendar.set(Calendar.HOUR_OF_DAY, 16);
-		calendar.set(Calendar.HOUR_OF_DAY, 18);
-		calendar.set(Calendar.HOUR_OF_DAY, 20);
-		calendar.set(Calendar.HOUR_OF_DAY, 22);
-		//calendar.set(Calendar.MINUTE, 30);
 
 		// setRepeating() lets you specify a precise custom interval--in this case,
 		// 20 minutes.
@@ -60,7 +59,7 @@ public class BootReceiver extends BroadcastReceiver {
 		//		AlarmManager.RTC_WAKEUP,
 		alarmMgr.setInexactRepeating(
 				AlarmManager.ELAPSED_REALTIME_WAKEUP,
-				1000 * 60 * 1, //* 60, // Se disparará después de dos minutos
+				1000 * 60 * 2, //* 60, // Se disparará después de dos minutos
 				1000 * 60 * 3, //* 60, // Se repetirá a cada dos minutos
 				// Lo ideal es que se repita a cada dos horas, no tiene tanto sentido
 				// que esto sea muy frecuente
