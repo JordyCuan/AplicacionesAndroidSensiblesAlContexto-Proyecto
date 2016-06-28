@@ -7,7 +7,7 @@ android {
     useLibrary 'org.apache.http.legacy'
 
     defaultConfig {
-        applicationId "cuan.jordy.com.androidcontexto"
+        applicationId "com.jordycuan.clima"
         minSdkVersion 10
         targetSdkVersion 23
         versionCode 1

@@ -1,4 +1,4 @@
-package cuan.jordy.com.androidcontexto;
+package com.jordycuan.clima.ui;
 
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
@@ -7,14 +7,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 
-import cuan.jordy.com.androidcontexto.db.Element;
+import com.jordycuan.clima.R;
+import com.jordycuan.clima.db.Element;
 
 /**
  * A placeholder fragment containing a simple view.
  */
 public class MainActivityFragment extends ListFragment {
 
-	protected static final String TAG = "MainActivity";
+	protected static final String TAG = "_Old_MainActivity";
 
 	public MainActivityFragment() {
 	}
@@ -23,10 +24,11 @@ public class MainActivityFragment extends ListFragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 	                         Bundle savedInstanceState) {
 
-		setListAdapter(new ArrayAdapter<String>(
+		MainActivity.mAdapter = new ArrayAdapter<String>(
 				inflater.getContext(),
 				R.layout.list_item,
-				Element.getAllString()));
+				Element.getAllString());
+		setListAdapter(MainActivity.mAdapter);
 
 		//return inflater.inflate(R.layout.fragment_main, container, false);
 		return super.onCreateView(inflater, container, savedInstanceState);

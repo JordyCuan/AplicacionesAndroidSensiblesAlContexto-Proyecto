@@ -1,5 +1,5 @@
 <fragment android:id="@+id/fragment"
-          android:name="cuan.jordy.com.androidcontexto.MainActivityFragment"
+          android:name="com.jordycuan.clima.ui.MainActivityFragment"
           xmlns:android="http://schemas.android.com/apk/res/android"
           xmlns:app="http://schemas.android.com/apk/res-auto"
           xmlns:tools="http://schemas.android.com/tools"

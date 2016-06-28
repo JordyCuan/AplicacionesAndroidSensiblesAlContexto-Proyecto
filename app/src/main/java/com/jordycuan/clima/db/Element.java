@@ -1,4 +1,4 @@
-package cuan.jordy.com.androidcontexto.db;
+package com.jordycuan.clima.db;
 
 import com.activeandroid.Model;
 import com.activeandroid.annotation.Column;
@@ -81,9 +81,9 @@ public class Element extends Model {
 	}
 
 	public static List<Element> getAll() {
-		// TODO: Order by date
 		return new Select()
 				.from(Element.class)
+				.orderBy("date DESC")
 				.execute();
 	}
 
