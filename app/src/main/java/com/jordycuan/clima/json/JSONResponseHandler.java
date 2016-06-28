@@ -18,37 +18,6 @@ import com.jordycuan.clima.db.Element;
  * Created by JordyCuan on 19/06/16.
  */
 public class JSONResponseHandler implements ResponseHandler<Element> {
-	/**
-		INTERESANTES:
-		http://openweathermap.org/current
-			{
-				"weather": [{
-					... ,
-					"description": "clear sky",
-					...
-				}],
-				"main": {
-					"temp": 279.388,
-					"pressure": 1039.04,
-					"humidity": 91,
-					"temp_min": 279.388,
-					"temp_max": 279.388,
-					...
-				},
-				"wind": {
-					"speed": 0.58,
-					...
-				},
-				"sys": {
-					... ,
-					"country": "AR",
-					"sunrise": 1466249213,
-					"sunset": 1466283253
-				},
-				"name": "Bahia Blanca",
-				...
-			}
-	*/
 	private static final String JSON_KEY_WEATHER = "weather";
 	private static final String JSON_KEY_DESCRIPTION = "description";
 

@@ -1,4 +1,8 @@
 <resources>
 	<string name="app_name">AndroidContexto</string>
 	<string name="action_settings">Settings</string>
+	<string name="notif_text">Nuevo informe climático recibido</string>
+	<string name="notif_title">Nuevo Informe</string>
+	<string name="notif_cont_text">"Clima de "</string>
+	<string name="notif_ticker">Informe climatico nuevo recibido</string>
 </resources>

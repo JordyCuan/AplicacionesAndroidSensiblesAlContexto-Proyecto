@@ -2,7 +2,6 @@ package com.jordycuan.clima.service;
 
 import android.Manifest;
 import android.app.IntentService;
-import android.app.ListFragment;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -58,14 +57,15 @@ public class WeatherUpdateService extends IntentService implements
 	private Handler handler;
 
 	protected static final String TAG = "*** WeatherUpdateServi";
+	protected static final String NAME = "WeatherUpdateService";
 
 	public WeatherUpdateService(String name) {
-		super("WeatherUpdateService");
+		super(this.NAME);
 		//this.buildGoogleApiClient();
 	}
 
 	public WeatherUpdateService() {
-		super("WeatherUpdateService");
+		super(this.NAME);
 		//this.buildGoogleApiClient();
 	}
 
@@ -239,7 +239,7 @@ public class WeatherUpdateService extends IntentService implements
 		handler.post(new Runnable() {
 			public void run() {
 
-				String text = "Nuevo informe climático recibido";
+				String text = getString(R.string.notif_text);
 				NotificationCompat.BigTextStyle textStyle = new NotificationCompat.BigTextStyle().bigText(text);
 
 				NotificationCompat.Builder mBuilder =
@@ -247,13 +247,13 @@ public class WeatherUpdateService extends IntentService implements
 						.setSmallIcon(R.mipmap.ic_launcher)
 						.setLargeIcon((((BitmapDrawable) getResources().getDrawable(R.mipmap.ic_launcher)).getBitmap()))
 								// TODO: Cambiar estos 2 despues
-						.setContentTitle("Nuevo Informe")
-						.setContentText("Clima de " + element.name + ", " + element.country)
+						.setContentTitle(getString(R.string.notif_title))
+						.setContentText(getString(R.string.notif_cont_text) + element.name + ", " + element.country)
 						.setStyle(textStyle)
 						.setAutoCancel(true)
 						.setDefaults(Notification.DEFAULT_ALL)
 						.setPriority(NotificationCompat.PRIORITY_HIGH)
-						.setTicker("Informe climatico nuevo recibido");
+						.setTicker(getString(R.string.notif_ticker));
 
 
 				Intent intent = new Intent(getApplicationContext(), MainActivity.class);
