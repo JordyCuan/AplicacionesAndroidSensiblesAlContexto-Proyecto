@@ -14,9 +14,7 @@ import java.io.IOException;
 import com.jordycuan.clima.Utils;
 import com.jordycuan.clima.db.Element;
 
-/**
- * Created by JordyCuan on 19/06/16.
- */
+
 public class JSONResponseHandler implements ResponseHandler<Element> {
 	private static final String JSON_KEY_WEATHER = "weather";
 	private static final String JSON_KEY_DESCRIPTION = "description";
@@ -61,7 +59,7 @@ public class JSONResponseHandler implements ResponseHandler<Element> {
 		Element element = new Element();
 
 		// Extraemos los datos del objeto
-		element.description  = ((JSONObject) responseObject.getJSONArray(JSON_KEY_WEATHER).get(0)).getString(JSON_KEY_DESCRIPTION);;
+		element.description  = ((JSONObject) responseObject.getJSONArray(JSON_KEY_WEATHER).get(0)).getString(JSON_KEY_DESCRIPTION);
 
 		JSONObject main = responseObject.getJSONObject(JSON_KEY_MAIN);
 		element.temp = Utils.kelvinToCelsius(main.getDouble(JSON_KEY_MAIN_TEMP));

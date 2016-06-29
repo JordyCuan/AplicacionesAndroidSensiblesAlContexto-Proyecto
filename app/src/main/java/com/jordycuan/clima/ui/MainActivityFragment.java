@@ -6,15 +6,21 @@ import android.support.v4.app.ListFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
+import android.widget.Toast;
 
+import com.activeandroid.ActiveAndroid;
+import com.activeandroid.util.Log;
 import com.jordycuan.clima.R;
 import com.jordycuan.clima.db.Element;
 
 /**
  * A placeholder fragment containing a simple view.
  */
-public class MainActivityFragment extends ListFragment {
+public class MainActivityFragment extends ListFragment implements OnItemClickListener {
 
 	public MainActivityFragment() {
 	}
@@ -31,10 +37,22 @@ public class MainActivityFragment extends ListFragment {
 	}
 
 	public void drawItems(Context context) {
-		MainActivity.mAdapter = new ArrayAdapter<String>(
-				context,
-				R.layout.list_item,
-				Element.getAllString());
+		Log.d("*** DrawItems ***", "--- Se settea el adapter ---");
+		MainActivity.mAdapter = new WeatherAdapter(context, Element.getAll());
+
 		setListAdapter(MainActivity.mAdapter);
+	}
+
+
+	@Override
+	public void onItemClick(AdapterView<?> parent, View view, int position,long id) {
+		Toast.makeText(getActivity(), "Item: " + position, Toast.LENGTH_SHORT).show();
+/*
+		Intent intent = new Intent(getActivity(), );
+		Bundle b = new Bundle();
+		b.putSerializable("reporte", reports.get(position));
+		intent.putExtras(b);
+		setSeenReport(reports.get(position), view);
+		startActivity(intent);*/
 	}
 }

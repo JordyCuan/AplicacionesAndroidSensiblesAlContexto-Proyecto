@@ -27,41 +27,26 @@ public class BootReceiver extends BroadcastReceiver {
 	public void setAlarm(Context context) {
 		Log.d("****** SetAlarm ******", "Setting the alarm");
 		alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-		alarmIntent = PendingIntent.getService(
-				context,
-				0,
+		alarmIntent = PendingIntent.getService(context, 0,
 				new Intent(context, WeatherUpdateService.class),
 				PendingIntent.FLAG_NO_CREATE);
+
+
+		Log.d("****** PendInt ******", "PendInt " + alarmIntent);
 
 		if (alarmIntent != null) {
 			Log.d("****** Al_arm ******", "La alarma ya existe");
 			return;
 		} else {
-			alarmIntent = PendingIntent.getService(
-					context,
-					0,
-					new Intent(context, WeatherUpdateService.class),
-					0);
+			alarmIntent = PendingIntent.getService(context, 0,
+					new Intent(context, WeatherUpdateService.class), 0);
 		}
 
-/*
 
-		// setRepeating() lets you specify a precise custom interval--in this case,
-		// 20 minutes.
-		int minutes = 120; // 2 hours
-		minutes = 2; // TO DO: Test
-		long time_interval = 1000 * 60 * minutes;
-		alarmMgr.setInexactRepeating(AlarmManager.RTC, calendar.getTimeInMillis(),
-				time_interval, alarmIntent);*/
-		//alarmMgr.setRepeating(
-		//alarmMgr.setInexactRepeating(
-		//		AlarmManager.RTC_WAKEUP,
 		alarmMgr.setInexactRepeating(
 				AlarmManager.ELAPSED_REALTIME_WAKEUP,
-				1000 * 60 * 2, //* 60, // Se disparará después de dos minutos
-				1000 * 60 * 3, //* 60, // Se repetirá a cada dos minutos
-				// Lo ideal es que se repita a cada dos horas, no tiene tanto sentido
-				// que esto sea muy frecuente
+				1000 * 60 * 2,
+				1000 * 60 * 4,
 				alarmIntent);
 	}
 }

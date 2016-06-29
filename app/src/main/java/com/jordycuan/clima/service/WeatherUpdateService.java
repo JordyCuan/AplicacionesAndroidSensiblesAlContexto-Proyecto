@@ -16,6 +16,7 @@ import android.net.http.AndroidHttpClient;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NotificationCompat;
 import android.text.format.DateFormat;
@@ -60,13 +61,11 @@ public class WeatherUpdateService extends IntentService implements
 	protected static final String NAME = "WeatherUpdateService";
 
 	public WeatherUpdateService(String name) {
-		super(this.NAME);
-		//this.buildGoogleApiClient();
+		super(NAME);
 	}
 
 	public WeatherUpdateService() {
-		super(this.NAME);
-		//this.buildGoogleApiClient();
+		super(NAME);
 	}
 
 	@Override
@@ -74,7 +73,6 @@ public class WeatherUpdateService extends IntentService implements
 		super.onCreate();
 		Log.d("****** Servicio ******", "--- SERVICIO INICIADO ---");
 
-		// TO DO: VERIFICAR ESTADO DEL WIFI
 		ConnectivityManager connManager = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
 		NetworkInfo wifi = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
 		NetworkInfo mobile = connManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
@@ -89,7 +87,6 @@ public class WeatherUpdateService extends IntentService implements
 
 	@Override
 	public void onDestroy() {
-		//mGoogleApiClient.disconnect();
 		super.onDestroy();
 	}
 
@@ -114,10 +111,6 @@ public class WeatherUpdateService extends IntentService implements
 	}
 
 
-	/*********
-	 * METODOS IMPLEMENTADOS
-	 ********/
-	/*  */
 	@Override
 	public void onConnected(Bundle connectionHint) {
 		Log.d("****** CONECTADO ******", "--- CONECTADO ---");
@@ -127,7 +120,6 @@ public class WeatherUpdateService extends IntentService implements
 			return;
 		}
 
-		Log.d("****** PERMISO ******", "--- PERMISO ---");
 		mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
 		if (mLastLocation != null) {
 			mLat = mLastLocation.getLatitude();
@@ -140,12 +132,11 @@ public class WeatherUpdateService extends IntentService implements
 		mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
 
 		LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
-		Log.d("****** FIN ******", "--- FIN - CONECTADO ---");
 	}
 
 
 	@Override
-	public void onConnectionFailed(ConnectionResult result) {
+	public void onConnectionFailed(@NonNull ConnectionResult result) {
 		// Refer to the javadoc for ConnectionResult to see what error codes might be returned in
 		// onConnectionFailed.
 		Log.i(TAG, "Connection failed: ConnectionResult.getErrorCode() = " + result.getErrorCode());
@@ -158,14 +149,13 @@ public class WeatherUpdateService extends IntentService implements
 		// The connection to Google Play services was lost for some reason. We call connect() to
 		// attempt to re-establish the connection.
 		Log.i(TAG, "Connection suspended");
-		//mGoogleApiClient.connect();
 	}
 
 
 	@Override
 	public void onLocationChanged(Location location) {
 		mLastLocation = location;
-		//no need to do a null check here:
+
 		mLat = location.getLatitude();
 		mLon = location.getLongitude();
 
@@ -199,8 +189,6 @@ public class WeatherUpdateService extends IntentService implements
 			JSONResponseHandler responseHandler = new JSONResponseHandler();
 			try {
 				return mClient.execute(request, responseHandler);
-			} catch (ClientProtocolException e) {
-				e.printStackTrace();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -212,16 +200,18 @@ public class WeatherUpdateService extends IntentService implements
 			Log.d(TAG, "onPostExecute");
 			if (null != mClient)
 				mClient.close();
+
 			if (result != null) {
 				Date d = new Date();
 				result.date = d.getTime();
-				result.dateString = DateFormat.format("dd/MM/yyyy hh:mm:ss", result.date).toString();
+				result.dateString = DateFormat.format("dd/MM/yyyy hh:mm", result.date).toString();
 
 				Log.d(TAG, "*** Saving: " + result);
 				result.save();
 
-				// TO DO: Generar la notificación?
+
 				mostrarNotificacion(result);
+
 				if (MainActivity.mAdapter != null) {
 					MainActivity.mAdapter.notifyDataSetChanged();
 				}
@@ -235,7 +225,7 @@ public class WeatherUpdateService extends IntentService implements
 
 
 	public void mostrarNotificacion(final Element element) {
-		// Intervenimos en el UI
+		// UI Intervention
 		handler.post(new Runnable() {
 			public void run() {
 
@@ -246,7 +236,6 @@ public class WeatherUpdateService extends IntentService implements
 						new NotificationCompat.Builder(getApplicationContext())
 						.setSmallIcon(R.mipmap.ic_launcher)
 						.setLargeIcon((((BitmapDrawable) getResources().getDrawable(R.mipmap.ic_launcher)).getBitmap()))
-								// TODO: Cambiar estos 2 despues
 						.setContentTitle(getString(R.string.notif_title))
 						.setContentText(getString(R.string.notif_cont_text) + element.name + ", " + element.country)
 						.setStyle(textStyle)
@@ -259,14 +248,14 @@ public class WeatherUpdateService extends IntentService implements
 				Intent intent = new Intent(getApplicationContext(), MainActivity.class);
 				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
 
-				// Indicamos el intent que se abrirá al pulsar la notificación
+				// Specify which intent is going to be open when the notification is clicked
 				PendingIntent contIntent = PendingIntent.getActivity(getApplicationContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 				mBuilder.setContentIntent(contIntent);
 
 				NotificationManager mNotificationManager =
 						(NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
-				// Mostramos la notificación
+				// Show the notification
 				mNotificationManager.notify(239847, mBuilder.build());
 			}
 		});

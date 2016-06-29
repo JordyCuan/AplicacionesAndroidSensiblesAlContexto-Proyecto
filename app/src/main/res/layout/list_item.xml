@@ -1,8 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TextView xmlns:android="http://schemas.android.com/apk/res/android"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:minHeight="?android:attr/listPreferredItemHeight"
-          android:gravity="center_vertical"
-          android:textColor="@color/common_google_signin_btn_text_dark_focused"
-          android:id="@+id/list_item" />
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="?android:attr/listPreferredItemHeight"
+                android:id="@+id/fondo_list_view">
+
+	<ImageView
+		android:layout_width="?android:attr/listPreferredItemHeight"
+		android:layout_height="?android:attr/listPreferredItemHeight"
+		android:id="@+id/icon"
+		android:src="@drawable/hoja"
+		android:layout_alignParentTop="true"
+		android:layout_alignParentLeft="true"
+		android:layout_alignParentStart="true"/>
+
+	<TextView
+		android:id="@+id/temp"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:textAppearance="?android:attr/textAppearanceLarge"
+		android:textSize="48sp"
+		android:text="N"
+		android:layout_centerVertical="true"
+		android:layout_toRightOf="@+id/icon"
+		android:layout_toEndOf="@+id/icon"/>
+
+	<TextView
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:textAppearance="?android:attr/textAppearanceLarge"
+		android:text="Fecha"
+		android:id="@+id/tv_fecha"
+		android:textStyle="italic"
+		android:layout_alignParentTop="true"
+		android:layout_toEndOf="@+id/temp"
+		android:layout_toRightOf="@+id/temp"
+		android:layout_marginLeft="16dp"
+		android:layout_marginTop="8dp"/>
+
+	<TextView
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:textAppearance="?android:attr/textAppearanceMedium"
+		android:text="Contenido"
+		android:id="@+id/tv_contenido"
+		android:maxLines="1"
+		android:layout_alignParentBottom="true"
+		android:layout_toRightOf="@+id/temp"
+		android:layout_marginLeft="16dp"
+		android:layout_marginBottom="8dp"
+		/>
+
+</RelativeLayout>
