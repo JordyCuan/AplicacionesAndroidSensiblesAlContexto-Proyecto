@@ -1,5 +1,7 @@
 package com.jordycuan.clima.ui;
 
+import android.app.NotificationManager;
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
@@ -16,6 +18,8 @@ public class MainActivity extends AppCompatActivity {
 
 	public static BaseAdapter mAdapter;
 	public static MainActivityFragment mainActivityFragment;
+	public static final int ID_NOTIFICATION = 239847;
+	public static boolean activa;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -44,5 +48,17 @@ public class MainActivity extends AppCompatActivity {
 			mAdapter.notifyDataSetChanged();
 		if (mainActivityFragment != null)
 			mainActivityFragment.drawItems(this);
+
+		NotificationManager mNotificationManager =
+				(NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+		mNotificationManager.cancel(ID_NOTIFICATION);
+
+		this.activa = true;
+	}
+
+	@Override
+	protected void onPause() {
+		this.activa = false;
+		super.onPause();
 	}
 }

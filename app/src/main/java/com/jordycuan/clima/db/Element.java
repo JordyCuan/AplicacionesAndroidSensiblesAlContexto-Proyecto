@@ -26,6 +26,7 @@ public class Element extends Model {
 	"sunset": 1466283253
 	"name": "Bahia Blanca"	*/
 
+	//@Column(name = "_id", unique = true, onUniqueConflict = Column.ConflictAction.IGNORE) public long _id;
 	@Column(name = "Description") public String description;
 	@Column(name = "Temp") public double temp;
 	@Column(name = "Pressure") public double pressure;
@@ -43,10 +44,11 @@ public class Element extends Model {
 
 	public Element() { super(); }
 
-	public Element(String description, double temp, double pressure, int humidity, double temp_min,
+	public Element(long _id, String description, double temp, double pressure, int humidity, double temp_min,
 	               double temp_max, double speed, String country, long sunrise, long sunset,
 	               String name, String dateString, long date) {
 		super();
+		//this._id = _id;
 		this.description = description;
 		this.temp = temp;
 		this.pressure = pressure;
@@ -65,7 +67,8 @@ public class Element extends Model {
 	@Override
 	public String toString() {
 		return "Element{" +
-				"description='" + description + '\'' +
+				//"_id=" + _id +
+				", description='" + description + '\'' +
 				", dateString=" + dateString +
 				", temp=" + temp +
 				", pressure=" + pressure +
@@ -93,5 +96,12 @@ public class Element extends Model {
 			list.add(e.toString());
 		}
 		return list;
+	}
+
+	public static Element getElementById(long id) {
+		return new Select()
+				.from(Element.class)
+				.where("_id = ?", id)
+				.executeSingle();
 	}
 }

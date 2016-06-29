@@ -74,7 +74,6 @@ public class WeatherAdapter extends BaseAdapter {
 		// Generate the report depending on the position
 		Element element = elements.get(position);
 
-
 		holder.temp.setText(((int)element.temp) + "ºC");
 		holder.fecha.setText(element.dateString);
 		holder.contenido.setText( element.name + ", " + element.country );
