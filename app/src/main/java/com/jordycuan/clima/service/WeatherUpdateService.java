@@ -207,14 +207,13 @@ public class WeatherUpdateService extends IntentService implements
 				result.dateString = DateFormat.format("dd/MM/yyyy hh:mm", result.date).toString();
 
 				Log.d(TAG, "*** Saving: " + result);
+				//result._id = Element.getAll().size();
 				result.save();
+				Log.d(TAG, "*** DB Size: " + Element.getAll().size());
 
-
+				//if ( ! MainActivity.activa ) // If the Activity is not active, the notification is show
 				mostrarNotificacion(result);
 
-				if (MainActivity.mAdapter != null) {
-					MainActivity.mAdapter.notifyDataSetChanged();
-				}
 				if (MainActivity.mainActivityFragment != null) {
 					MainActivity.mainActivityFragment.drawItems(getApplicationContext());
 				}
@@ -256,7 +255,7 @@ public class WeatherUpdateService extends IntentService implements
 						(NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
 				// Show the notification
-				mNotificationManager.notify(239847, mBuilder.build());
+				mNotificationManager.notify(MainActivity.ID_NOTIFICATION, mBuilder.build());
 			}
 		});
 	}
