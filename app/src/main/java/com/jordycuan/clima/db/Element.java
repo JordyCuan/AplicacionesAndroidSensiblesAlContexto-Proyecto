@@ -26,13 +26,13 @@ public class Element extends Model {
 	"sunset": 1466283253
 	"name": "Bahia Blanca"	*/
 
-	//@Column(name = "_id", unique = true, onUniqueConflict = Column.ConflictAction.IGNORE) public long _id;
+	@Column(name = "_id", unique = true, onUniqueConflict = Column.ConflictAction.IGNORE) public long _id;
 	@Column(name = "Description") public String description;
-	@Column(name = "Temp") public double temp;
+	@Column(name = "Temp") public int temp;
 	@Column(name = "Pressure") public double pressure;
 	@Column(name = "Humidity") public int humidity;
-	@Column(name = "Temp_min") public double temp_min;
-	@Column(name = "Temp_max") public double temp_max;
+	@Column(name = "Temp_min") public int temp_min;
+	@Column(name = "Temp_max") public int temp_max;
 	@Column(name = "Speed") public double speed;
 	@Column(name = "Country") public String country;
 	@Column(name = "Sunrise") public long sunrise;
@@ -44,11 +44,11 @@ public class Element extends Model {
 
 	public Element() { super(); }
 
-	public Element(long _id, String description, double temp, double pressure, int humidity, double temp_min,
-	               double temp_max, double speed, String country, long sunrise, long sunset,
+	public Element(long _id, String description, int temp, double pressure, int humidity, int temp_min,
+	               int temp_max, double speed, String country, long sunrise, long sunset,
 	               String name, String dateString, long date) {
 		super();
-		//this._id = _id;
+		this._id = _id;
 		this.description = description;
 		this.temp = temp;
 		this.pressure = pressure;

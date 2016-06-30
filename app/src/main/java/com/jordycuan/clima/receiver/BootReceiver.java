@@ -46,7 +46,7 @@ public class BootReceiver extends BroadcastReceiver {
 		alarmMgr.setInexactRepeating(
 				AlarmManager.ELAPSED_REALTIME_WAKEUP,
 				1000 * 60 * 1,
-				1000 * 60 * 3,
+				1000 * 60 * 65,
 				alarmIntent);
 	}
 }

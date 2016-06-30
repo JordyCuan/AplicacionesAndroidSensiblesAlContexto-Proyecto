@@ -46,10 +46,10 @@ public class MainActivityFragment extends ListFragment implements OnItemClickLis
 
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int pos, long id) {
-//		Intent intent = new Intent(getActivity(), DetailedActivity.class);
-//		Bundle b = new Bundle();
-//		b.putLong("pos", pos);
-//		intent.putExtras(b);
-//		startActivity(intent);
+		Intent intent = new Intent(getActivity(), DetailedActivity.class);
+		Bundle b = new Bundle();
+		b.putLong("pos", pos);
+		intent.putExtras(b);
+		startActivity(intent);
 	}
 }

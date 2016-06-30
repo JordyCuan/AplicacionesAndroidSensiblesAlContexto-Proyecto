@@ -50,8 +50,7 @@
 			android:name="com.jordycuan.clima.ui.DetailedActivity"
 			android:label="@string/title_activity_detailed"
 			android:theme="@style/AppTheme.NoActionBar"
-			>
+			android:screenOrientation="portrait">
 		</activity>
 	</application>
-
 </manifest>

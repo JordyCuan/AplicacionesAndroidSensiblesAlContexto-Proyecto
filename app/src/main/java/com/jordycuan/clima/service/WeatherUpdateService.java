@@ -207,7 +207,7 @@ public class WeatherUpdateService extends IntentService implements
 				result.dateString = DateFormat.format("dd/MM/yyyy hh:mm", result.date).toString();
 
 				Log.d(TAG, "*** Saving: " + result);
-				//result._id = Element.getAll().size();
+				result._id = Element.getAll().size();
 				result.save();
 				Log.d(TAG, "*** DB Size: " + Element.getAll().size());
 
